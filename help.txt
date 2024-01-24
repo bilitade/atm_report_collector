@@ -1,0 +1,2 @@
+run this script with admin over atms to allow shareable folder
+powershell.exe -ExecutionPolicy Bypass -File .\sharefolder.ps1

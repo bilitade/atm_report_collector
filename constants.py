@@ -1,0 +1,3 @@
+LOGS_FOLDER = "ejlogs"
+LOG_FILE_NAME = "log.txt"
+BASE_DESTINATION_FOLDER = r'C:\ATMLogs'

@@ -1,0 +1,23 @@
+[
+    {
+        "ATM_ID": 1,
+        "ATM_IP": "10.1.15.791",
+        "Domain": "coopbank.local",
+        "Username": "wondimagegng",
+        "Password": "Wonde@12345678",
+        "BRANCH_ID": 101,
+        "BRANCH_NAME": "WondimagegnBranch",
+        "ATM_TYPE": "NCR"
+    },
+    {
+        "ATM_ID": 2,
+        "ATM_IP": "10.1.15.77",
+        "Domain": "coopbank.local",
+        "Username": "efawokt",
+        "Password": "ABEKO@4909",
+        "BRANCH_ID": 102,
+        "BRANCH_NAME": "EfawakBranch",
+        "ATM_TYPE": "CRM"
+    }
+
+]
