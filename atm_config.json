@@ -1,31 +1,25 @@
 [
+   
     {
-        "ATM_Terminal_Id": "CBO23424",
+        "ATM_Terminal_Id": "CBOEFA11",
+        "ATM_IP": "10.1.15.77",
+        "ATM_Location": "finfine",
+        "Username": "efawokt",
+        "Password": "ABEKO@4909",
+        "BRANCH_NAME": "Finfine",
+        "ATM_TYPE": "NCR"
+    },
+    {
+        "ATM_Terminal_Id": "CBOWOND1",
         "ATM_IP": "10.1.15.79",
         "ATM_Location": "Dembel",
         "Username": "wondimagegng",
         "Password": "Wonde@12345678",
         "BRANCH_NAME": "Finfine",
         "ATM_TYPE": "NCR"
-    },
-    
-    {
-        "ATM_Terminal_Id": "CBO23426",
-        "ATM_IP": "10.1.15.77",
-        "ATM_Location": "SomeOtherLocation",
-        "Username": "efawokt",
-        "Password": "ABEKO@4909",
-        "BRANCH_NAME": "AnotherBranch",
-        "ATM_TYPE": "CRM"
-    },
-
-    {
-        "ATM_Terminal_Id": "CBO23425",
-        "ATM_IP": "10.1.15.78",
-        "ATM_Location": "SomeOtherLocation",
-        "Username": "efawokt",
-        "Password": "ABEKO@4909",
-        "BRANCH_NAME": "AnotherBranch",
-        "ATM_TYPE": "CRM"
     }
+
+
+
+
 ]

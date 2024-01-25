@@ -1,3 +1,3 @@
-LOGS_FOLDER = "ejlogs"
-LOG_FILE_NAME = "log.txt"
+# "ejlogs"
+LOGS_FOLDER = "bililog" 
 BASE_DESTINATION_FOLDER = r'C:\ATMLogs'
