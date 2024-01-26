@@ -1,3 +1,4 @@
 # "ejlogs"
-LOGS_FOLDER = "bililog" 
+# LOGS_FOLDER = "bililog"
+LOGS_FOLDER="EJLogs"
 BASE_DESTINATION_FOLDER = r'C:\ATMLogs'

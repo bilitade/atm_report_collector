@@ -17,7 +17,17 @@
         "Password": "Wonde@12345678",
         "BRANCH_NAME": "Finfine",
         "ATM_TYPE": "NCR"
+    },
+    {
+        "ATM_Terminal_Id": "CBONCRTS",
+        "ATM_IP": "10.1.15.7",
+        "ATM_Location": "finfine",
+        "Username": "abcdwxyz",
+        "Password": "admin1234ADMIN",
+        "BRANCH_NAME": "Finfine",
+        "ATM_TYPE": "NCR"
     }
+    
 
 
 

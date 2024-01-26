@@ -46,39 +46,6 @@ def connect_to_atm(atm):
         logger.error(f"Error connecting to ATM {atm['ATM_Terminal_Id']}: {e}")
         logger.info("Skipping to the next ATM.")
 
-# def connect_to_atm(atm):
-#     try:
-#         # Quick IP validation
-#         if not is_valid_ip(atm["ATM_IP"]):
-#             logger.error(f"Invalid IP address for ATM {atm['ATM_Terminal_Id']}. Skipping.")
-#             return
-
-#         # Check if there is a previous connection
-#         if atm["ATM_Terminal_Id"] in previous_connections:
-#             logger.info(f"Using existing connection for ATM {atm['ATM_Terminal_Id']}")
-#         else:
-#             # Disconnect any existing connections
-#             subprocess.run(['net', 'use', fr'\\{atm["ATM_IP"]}\IPC$', '/delete'], check=True, timeout=5)
-            
-#             # Establish a new connection
-#             net_use_command = [
-#                 'net', 'use', fr'\\{atm["ATM_IP"]}\IPC$', f'/user:{atm["Username"]}', atm["Password"]
-#             ]
-#             subprocess.run(net_use_command, check=True, timeout=5)
-#             logger.info(f"Connected to ATM {atm['ATM_Terminal_Id']}")
-
-#             # Save the connection in the dictionary
-#             previous_connections[atm["ATM_Terminal_Id"]] = True
-
-#     except subprocess.CalledProcessError as e:
-#         logger.error(f"Authentication failed for ATM {atm['ATM_Terminal_Id']} ({atm['ATM_IP']}): {e}")
-#         logger.info("Skipping to the next ATM.")
-#     except subprocess.TimeoutExpired as e:
-#         logger.error(f"Authentication failed or timeout for ATM {atm['ATM_Terminal_Id']} ({atm['ATM_IP']}): {e}")
-#         logger.info("Skipping to the next ATM.")
-#     except Exception as e:
-#         logger.error(f"Error connecting to ATM {atm['ATM_Terminal_Id']}: {e}")
-#         logger.info("Skipping to the next ATM.")
 
 def disconnect_from_atm(atm):
     try:
