@@ -4,6 +4,7 @@ from tkinter import ttk
 from queue import Queue
 from threading import Thread
 import logging
+import time
 from gui_log_handler import GUIConsoleLogHandler
 from main import main as run_script
 import queue 
@@ -49,10 +50,29 @@ class ATMLogGrapperApp:
         atm_config_path = self.atmconfig_path_entry.get()
         shared_folder_name = self.shared_folder_entry.get()
         logs_path = self.logs_path_entry.get()
+        
+        # Record the start time
+        start_time = time.time()
+
 
         # Start the script execution in a separate thread
         self.script_execution_thread = Thread(target=self.execute_script, args=(atm_config_path, shared_folder_name, logs_path))
         self.script_execution_thread.start()
+         # Wait for the script execution thread to complete
+        self.script_execution_thread.join()
+
+        # Record the end time
+        end_time = time.time()
+
+        # Calculate the execution time
+        execution_time = end_time - start_time
+
+        # Update the execution time label on the GUI
+        self.execution_time_label.config(text=f"Execution Time: {execution_time:.2f} seconds")
+
+
+
+    
     def create_gui_elements(self):
         # Logo
         self.logo_image = tk.PhotoImage(file="logo.png")
@@ -85,28 +105,14 @@ class ATMLogGrapperApp:
         right_frame = ttk.Frame(self.main_frame)
         right_frame.grid(row=1, column=1, padx=10, sticky=tk.W)
 
-        # Scrollbars for console log text
-        scrollbar_y = ttk.Scrollbar(right_frame, orient=tk.VERTICAL)
-        scrollbar_y.grid(row=0, column=1, sticky=tk.NS)
-
-        scrollbar_x = ttk.Scrollbar(right_frame, orient=tk.HORIZONTAL)
-        scrollbar_x.grid(row=1, column=0, sticky=tk.EW)
-
-        self.console_log_text = tk.Text(right_frame, height=20, width=80, yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)  
+        # Create the console log text widget
+        self.console_log_text = tk.Text(right_frame, height=20, wrap=tk.NONE)
         self.console_log_text.grid(row=0, column=0, padx=10, pady=5, sticky=tk.NSEW)
 
-        scrollbar_y.config(command=self.console_log_text.yview)
-        scrollbar_x.config(command=self.console_log_text.xview)
+         # Execution time label
+        self.execution_time_label = ttk.Label(right_frame, text="Execution Time: 0 seconds")
+        self.execution_time_label.grid(row=1, column=0, columnspan=2, pady=5)
 
-        ttk.Label(right_frame, text="ATMs connected:").grid(row=2, column=0, sticky=tk.W)
-        self.atms_connected_label = ttk.Label(right_frame, text="0")
-        self.atms_connected_label.grid(row=2, column=1, sticky=tk.W, pady=5)
-
-        self.progress_bar = ttk.Progressbar(right_frame, orient="horizontal", length=200, mode="determinate")
-        self.progress_bar.grid(row=3, column=0, columnspan=2, pady=5)
-
-        self.cancel_button = ttk.Button(right_frame, text="Cancel", command=self.cancel_operation)
-        self.cancel_button.grid(row=4, column=0, columnspan=2, pady=10)
     def execute_script(self, atm_config_path, shared_folder_name, logs_path):
         try:
             # Call the backend function with the provided parameters
@@ -133,8 +139,8 @@ class ATMLogGrapperApp:
                 pass
 if __name__ == "__main__":
     # Set custom resolution
-    custom_width = 1200
-    custom_height = 800
+    custom_width = 1000
+    custom_height = 600
 
     root = tk.Tk()
     app = ATMLogGrapperApp(root, custom_width, custom_height)
