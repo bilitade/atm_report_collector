@@ -1,9 +1,9 @@
+# main.py
 import subprocess
 import shutil
 import os
 import socket
 import json
-from constants import LOGS_FOLDER, BASE_DESTINATION_FOLDER
 from log_config import logger
 
 # Dictionary to store previous connections
@@ -46,7 +46,6 @@ def connect_to_atm(atm):
         logger.error(f"Error connecting to ATM {atm['ATM_Terminal_Id']}: {e}")
         logger.info("Skipping to the next ATM.")
 
-
 def disconnect_from_atm(atm):
     try:
         # Check if there is a previous connection
@@ -59,16 +58,14 @@ def disconnect_from_atm(atm):
     except subprocess.CalledProcessError as e:
         logger.error(f"Error disconnecting from ATM {atm['ATM_Terminal_Id']} ({atm['ATM_IP']}): {e}")
 
-
-
-def copy_file_from_atm(atm):
+def copy_file_from_atm(atm, logs_folder, base_destination_folder):
     try:
-        source_folder = fr'\\{atm["ATM_IP"]}\{LOGS_FOLDER}'
+        source_folder = fr'\\{atm["ATM_IP"]}\{logs_folder}'
         logger.debug(f"Source folder path: {source_folder}")
 
         # Destination folder based on ATM information
         destination_folder = os.path.join(
-            BASE_DESTINATION_FOLDER,
+            base_destination_folder,
             f'ATM_{atm["ATM_Location"]}_{atm["ATM_Terminal_Id"]}_{atm["ATM_TYPE"]}'
         )
 
@@ -85,19 +82,14 @@ def copy_file_from_atm(atm):
     except Exception as e:
         logger.error(f"Error copying files: {e}")
 
-def main():
-    with open("atm_config.json", "r") as config_file:
+def main(atm_config_path, shared_folder_name, logs_path):
+    with open(atm_config_path, "r") as config_file:
         atm_list = json.load(config_file)
 
     for atm_info in atm_list:
         connect_to_atm(atm_info)
         if "ATM_Terminal_Id" in atm_info and atm_info["ATM_Terminal_Id"] in previous_connections:
-            copy_file_from_atm(atm_info)
+            copy_file_from_atm(atm_info, shared_folder_name, logs_path)
             disconnect_from_atm(atm_info)  # Disconnect after copying file
         else:
             disconnect_from_atm(atm_info)  # Disconnect if no copying is needed
-
-
-
-if __name__ == "__main__":
-    main()

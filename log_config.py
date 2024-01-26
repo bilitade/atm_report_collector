@@ -1,3 +1,5 @@
+# log_config.py
+
 import logging
 from logging import StreamHandler
 from logging.handlers import RotatingFileHandler
@@ -36,30 +38,6 @@ console_handler.setLevel(logging.INFO)  # Adjust the level as needed
 # Add the console handler to the logger
 logger.addHandler(console_handler)
 
-
-def decorate_log_record(record):
-    timestamp = record.created
-    human_readable_timestamp = datetime.utcfromtimestamp(timestamp).strftime('%I:%M:%S%p %Y-%m-%d %I:%M:%S%p')
-    decorative_timestamp = f"\n{'*' * 30}\n{'*' * 4} Log generated from a program run at {human_readable_timestamp} {'*' * 4}\n{'*' * 30}\n"
-    return decorative_timestamp + '\n\n \n'
-
-
-class DecorativeTimestampFormatter(logging.Formatter):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.decorative_added = False
-
-    def format(self, record):
-        if not self.decorative_added:
-            self.decorative_added = True
-            return decorate_log_record(record) + super().format(record)
-        else:
-            return super().format(record)
-
-
-decorative_formatter = DecorativeTimestampFormatter('%(asctime)s - %(levelname)s - %(message)s',
-                                                    datefmt='%I:%M:%S%p %Y-%m-%d %I:%M:%S%p')
-
 # Set the formatter for both handlers
-log_file_handler.setFormatter(decorative_formatter)
-console_handler.setFormatter(decorative_formatter)
+log_file_handler.setFormatter(file_formatter)
+console_handler.setFormatter(file_formatter)
