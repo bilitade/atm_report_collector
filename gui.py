@@ -1,5 +1,4 @@
-# gui.py
-
+# Import necessary modules
 import tkinter as tk
 from tkinter import ttk
 from queue import Queue
@@ -7,22 +6,54 @@ from threading import Thread
 import logging
 from gui_log_handler import GUIConsoleLogHandler
 from main import main as run_script
+import queue 
 
 class ATMLogGrapperApp:
     def __init__(self, root, width, height):
+        # Initialize GUI elements
         self.root = root
         self.root.title("ATM LOGO Grapper")
-
-        # Set window size
         self.root.geometry(f"{width}x{height}")
-
-        # Disable resizing and maximizing
         self.root.resizable(False, False)
 
-        # Main frame
+        # Create main frame
         self.main_frame = ttk.Frame(root)
         self.main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
+        # Initialize logging queue
+        self.log_queue = Queue()
+
+        # Create logging handler
+        gui_log_handler = GUIConsoleLogHandler(self.log_queue)
+        gui_log_handler.setLevel(logging.DEBUG)
+
+        # Create logging formatter
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%I-%M-%S%p %Y-%m-%d')
+        gui_log_handler.setFormatter(formatter)
+
+        # Add logging handler to root logger
+        logging.getLogger().addHandler(gui_log_handler)
+
+        # Start thread to update console log
+        self.update_console_log_thread = Thread(target=self.update_console_log)
+        self.update_console_log_thread.daemon = True
+        self.update_console_log_thread.start()
+
+        # Create GUI elements
+        self.create_gui_elements()
+
+     
+
+    def run_script(self):
+        # Get paths and configurations from GUI elements
+        atm_config_path = self.atmconfig_path_entry.get()
+        shared_folder_name = self.shared_folder_entry.get()
+        logs_path = self.logs_path_entry.get()
+
+        # Start the script execution in a separate thread
+        self.script_execution_thread = Thread(target=self.execute_script, args=(atm_config_path, shared_folder_name, logs_path))
+        self.script_execution_thread.start()
+    def create_gui_elements(self):
         # Logo
         self.logo_image = tk.PhotoImage(file="logo.png")
         self.logo_label = ttk.Label(self.main_frame, image=self.logo_image)
@@ -76,45 +107,34 @@ class ATMLogGrapperApp:
 
         self.cancel_button = ttk.Button(right_frame, text="Cancel", command=self.cancel_operation)
         self.cancel_button.grid(row=4, column=0, columnspan=2, pady=10)
-
-        # Set up logging
-        self.log_queue = Queue()
-        gui_log_handler = GUIConsoleLogHandler(self.log_queue)
-        gui_log_handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%I-%M-%S%p %Y-%m-%d')
-        gui_log_handler.setFormatter(formatter)
-        logging.getLogger().addHandler(gui_log_handler)
-
-        self.update_console_log_thread = Thread(target=self.update_console_log)
-        self.update_console_log_thread.daemon = True
-        self.update_console_log_thread.start()
-
-    def run_script(self):
-        # Get the paths and configurations from the GUI elements
-        atm_config_path = self.atmconfig_path_entry.get()
-        shared_folder_name = self.shared_folder_entry.get()
-        logs_path = self.logs_path_entry.get()
-
-        # Call the backend function with the provided parameters
+    def execute_script(self, atm_config_path, shared_folder_name, logs_path):
         try:
+            # Call the backend function with the provided parameters
             run_script(atm_config_path, shared_folder_name, logs_path)
         except Exception as e:
             logging.exception("An error occurred while running the script")
 
     def cancel_operation(self):
-        # Implement cancel operation logic here
-        pass
+        # Stop the script execution thread if it is running
+        if hasattr(self, 'script_execution_thread') and self.script_execution_thread.is_alive():
+            logging.warning("Cancelling operation...")
+            # Add your cancellation logic here
+            # For example, you can set a flag to indicate cancellation
+        else:
+            logging.info("No operation to cancel.")
 
     def update_console_log(self):
         while True:
-            log_message = self.log_queue.get()
-            self.console_log_text.insert(tk.END, log_message + '\n')
-            self.console_log_text.see(tk.END)  # Auto-scroll to the bottom of the text widget
-
+            try:
+                log_message = self.log_queue.get(timeout=0.1)  # Check for new log messages every 0.1 seconds
+                self.console_log_text.insert(tk.END, log_message + '\n')
+                self.console_log_text.see(tk.END)  # Auto-scroll to the bottom of the text widget
+            except queue.Empty:  # Use queue.Empty to handle the exception
+                pass
 if __name__ == "__main__":
     # Set custom resolution
-    custom_width = 1000
-    custom_height = 600
+    custom_width = 1200
+    custom_height = 800
 
     root = tk.Tk()
     app = ATMLogGrapperApp(root, custom_width, custom_height)
