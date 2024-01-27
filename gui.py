@@ -4,6 +4,7 @@ from queue import Queue
 from threading import Thread
 import logging
 import time
+from tkinter import filedialog
 from gui_log_handler import GUIConsoleLogHandler
 from main import main as run_script
 import queue 
@@ -11,7 +12,7 @@ import queue
 class ATMLogGrapperApp:
     def __init__(self, root, width, height):
         self.root = root
-        self.root.title("ATM LOGO Grapper")
+        self.root.title("ATM LOG Collector")
         self.root.geometry(f"{width}x{height}")
         self.root.resizable(False, False)
         self.main_frame = ttk.Frame(root)
@@ -25,22 +26,31 @@ class ATMLogGrapperApp:
         self.update_console_log_thread = Thread(target=self.update_console_log)
         self.update_console_log_thread.daemon = True
         self.update_console_log_thread.start()
-        self.start_time = 0  # Initialize start_time
+        #time  
+        self.start_time = 0
+        self.update_interval = 100 
+        self.last_execution_time = 0  
+        
+       
         self.create_gui_elements()
-
+       
     def run_script(self):
-        self.start_time = time.time()  # Update start_time
+         # Reset the start time
+        self.start_time = time.time()
+
         atm_config_path = self.atmconfig_path_entry.get()
         shared_folder_name = self.shared_folder_entry.get()
         logs_path = self.logs_path_entry.get()
+
+        # Start the timer for execution time
+        self.update_execution_time()
+
         # Start the script execution in a separate thread
         self.script_execution_thread = Thread(target=self.execute_script, args=(atm_config_path, shared_folder_name, logs_path))
         self.script_execution_thread.start()
-        
+
         # Update the start time label
         self.start_time_label.config(text=f"Start Time: {time.strftime('%H:%M:%S', time.localtime(self.start_time))}")
-
- 
 
     def create_gui_elements(self):
                 # Logo
@@ -56,6 +66,9 @@ class ATMLogGrapperApp:
                 self.atmconfig_path_entry = ttk.Entry(left_frame)
                 self.atmconfig_path_entry.grid(row=0, column=1, sticky=tk.W, pady=(10, 5))
                 self.atmconfig_path_entry.insert(0, ".\\atm_config.json")
+                # Buttons for choosing paths
+                ttk.Button(left_frame, text="Choose ATMConfig.json", command=self.choose_atm_config).grid(row=0, column=2, padx=(10, 0))
+                ttk.Button(left_frame, text="Choose logs path", command=self.choose_logs_path).grid(row=2, column=2, padx=(10, 0))
 
                 ttk.Label(left_frame, text="Shared folder name of all ATMs:").grid(row=1, column=0, sticky=tk.W, pady=(10, 5))
                 self.shared_folder_entry = ttk.Entry(left_frame)
@@ -91,7 +104,17 @@ class ATMLogGrapperApp:
                 self.start_time_label = ttk.Label(right_frame, text="Start Time: -")
                 self.start_time_label.grid(row=2, column=0, columnspan=2, pady=5)
 
-     
+    def choose_atm_config(self):
+        path = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
+        if path:
+            self.atmconfig_path_entry.delete(0, tk.END)
+            self.atmconfig_path_entry.insert(0, path)
+
+    def choose_logs_path(self):
+        path = filedialog.askdirectory()
+        if path:
+            self.logs_path_entry.delete(0, tk.END)
+            self.logs_path_entry.insert(0, path)
     def execute_script(self, atm_config_path, shared_folder_name, logs_path):
         try:
             # Call the backend function with the provided parameters
@@ -99,14 +122,8 @@ class ATMLogGrapperApp:
         except Exception as e:
             logging.exception("An error occurred while running the script")
         finally:
-            # Record the end time
-            end_time = time.time()
-
-            # Calculate the execution time
-            execution_time = end_time - self.start_time
-
-            # Update the execution time label on the GUI
-            self.execution_time_label.config(text=f"Execution Time: {execution_time:.2f} seconds")
+            # Once the script execution is complete, stop the execution time update
+            self.stop_execution_time_update()
 
     def update_console_log(self):
         while True:
@@ -116,7 +133,24 @@ class ATMLogGrapperApp:
                 self.console_log_text.see(tk.END)
             except queue.Empty:
                 pass
+    def update_execution_time(self):
+            # Update the execution time label
+        if self.start_time != 0:
+            current_time = time.time()
+            execution_time = current_time - self.start_time
+            self.execution_time_label.config(text=f"Execution Time: {execution_time:.2f} seconds")
 
+            # Schedule the next update
+            self.root.after(100, self.update_execution_time)
+
+    def stop_execution_time_update(self):
+    # Stop the execution time update
+        if self.start_time != 0:
+            # Store the last counted time
+            self.last_execution_time = time.time() - self.start_time
+        self.start_time = 0
+        # Set the execution time label to the last counted time
+        self.execution_time_label.config(text=f"Execution Time: {self.last_execution_time:.2f} seconds")
 if __name__ == "__main__":
     custom_width = 1000
     custom_height = 600
