@@ -106,7 +106,7 @@ class ATMLogGrapperApp:
                 # Create the title label for the console log
                 self.title_label = ttk.Label(right_frame, text="Status Log", font=("Helvetica", 12, "bold"))
                 self.title_label.grid(row=0, column=0, columnspan=2, pady=(10, 5))
-            # Create the console log text widget with horizontal expansion and text wrapping
+               # Create the console log text widget with horizontal expansion and text wrapping
                 self.console_log_text = tk.Text(right_frame, height=15, width=70, wrap=tk.WORD)
                 self.console_log_text.grid(row=1, column=0, padx=10, pady=5, sticky=tk.NSEW)
 
@@ -124,6 +124,15 @@ class ATMLogGrapperApp:
                 # Start time label
                 self.start_time_label = ttk.Label(right_frame, text="Start Time: -")
                 self.start_time_label.grid(row=4, column=0, columnspan=2, pady=5)
+                
+                
+                footer_text = "Made With  ❤️ \n COOP Bank of Oromia \n Payment Switch Acquiring Team \n 2024"
+                footer_label = ttk.Label(self.main_frame, text=footer_text, anchor="center", justify="center")
+                footer_label.grid(row=2, column=0, columnspan=2, pady=(10, 0), sticky="nsew")
+
+                # Configure the grid so that the label spans the whole width
+                self.main_frame.grid_columnconfigure(0, weight=1)
+                self.main_frame.grid_rowconfigure(2, weight=1)
                 # Configure grid column and row weights to allow horizontal and vertical expansion
                 right_frame.grid_columnconfigure(0, weight=1)
                 right_frame.grid_rowconfigure(1, weight=1)
@@ -198,7 +207,7 @@ class ATMLogGrapperApp:
 
 
 if __name__ == "__main__":
-    custom_width = 1020
+    custom_width = 1080
     custom_height = 640
     root = tk.Tk()
     app = ATMLogGrapperApp(root, custom_width, custom_height)

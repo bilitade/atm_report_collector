@@ -86,13 +86,37 @@ def copy_file_from_atm(atm, logs_folder, base_destination_folder):
 
 def main(atm_config_path, shared_folder_name, logs_path):
     configure_logging(logs_path)
-    with open(atm_config_path, "r") as config_file:
-        atm_list = json.load(config_file)
 
-    for atm_info in atm_list:
-        connect_to_atm(atm_info)
-        if "ATM_Terminal_Id" in atm_info and atm_info["ATM_Terminal_Id"] in previous_connections:
-            copy_file_from_atm(atm_info, shared_folder_name, logs_path)
-            disconnect_from_atm(atm_info)  # Disconnect after copying file
-        else:
-            disconnect_from_atm(atm_info)  # Disconnect if no copying is needed
+    try:
+        if not atm_config_path.endswith('.json'):
+            logger.info("Config is not in JSON format. Please select the correct file.")
+            return
+
+        with open(atm_config_path, "r") as config_file:
+            try:
+                atm_list = json.load(config_file)
+            except json.JSONDecodeError:
+                logger.info("Please check the format of the selected JSON file. It is not in the correct format.")
+                return
+
+            # Check if ATM configuration is in the expected format
+            for atm_info in atm_list:
+                required_keys = ["ATM_Terminal_Id", "ATM_IP", "ATM_Location", "Username", "Password", "BRANCH_NAME", "ATM_TYPE"]
+                if not all(key in atm_info for key in required_keys):
+                    logger.info("Please check the format of the selected JSON file. It isn't compatible with this program. Use the right JSON.")
+                    return
+
+        if not atm_list:
+            logger.info("Please provide a valid config.json file.")
+            return
+
+        for atm_info in atm_list:
+            connect_to_atm(atm_info)
+            if "ATM_Terminal_Id" in atm_info and atm_info["ATM_Terminal_Id"] in previous_connections:
+                copy_file_from_atm(atm_info, shared_folder_name, logs_path)
+                disconnect_from_atm(atm_info)  # Disconnect after copying file
+            else:
+                disconnect_from_atm(atm_info)  # Disconnect if no copying is needed
+
+    except FileNotFoundError:
+        logger.info("Please provide a config.json file.")
