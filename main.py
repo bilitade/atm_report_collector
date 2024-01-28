@@ -120,3 +120,13 @@ def main(atm_config_path, shared_folder_name, logs_path):
 
     except FileNotFoundError:
         logger.info("Please provide a config.json file.")
+
+
+
+#the following main is if we want to run from CLI 
+
+if __name__ == "__main__":
+    atm_config_path = "atm_config.json"
+    shared_folder_name = "EJLogs"
+    logs_path = "C:/ATMLogs"
+    main(atm_config_path, shared_folder_name, logs_path)

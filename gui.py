@@ -7,10 +7,10 @@ import tkinter as tk
 from tkinter import ttk
 from queue import Queue
 from threading import Thread
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from gui_log_handler import GUIConsoleLogHandler
-from main import main as run_script
-from tkinter import messagebox
+from main import main as  main_run_script
+
 
 class ATMLogGrapperApp:
     def __init__(self, root, width, height):
@@ -152,7 +152,7 @@ class ATMLogGrapperApp:
     def execute_script(self, atm_config_path, shared_folder_name, logs_path):
         try:
             # Call the backend function with the provided parameters
-            run_script(atm_config_path, shared_folder_name, logs_path)
+           main_run_script(atm_config_path, shared_folder_name, logs_path)
         except Exception as e:
             logging.exception("An error occurred while running the script")
         finally:
