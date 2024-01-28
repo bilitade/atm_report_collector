@@ -4,7 +4,9 @@ import shutil
 import os
 import socket
 import json
+from log_config import configure_logging
 from log_config import logger
+
 
 # Dictionary to store previous connections
 previous_connections = {}
@@ -83,6 +85,7 @@ def copy_file_from_atm(atm, logs_folder, base_destination_folder):
         logger.error(f"Error copying files: {e}")
 
 def main(atm_config_path, shared_folder_name, logs_path):
+    configure_logging(logs_path)
     with open(atm_config_path, "r") as config_file:
         atm_list = json.load(config_file)
 

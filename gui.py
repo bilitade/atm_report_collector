@@ -58,7 +58,7 @@ class ATMLogGrapperApp:
         atm_config_path = self.atmconfig_path_entry.get()
         shared_folder_name = self.shared_folder_entry.get()
         logs_path = self.logs_path_entry.get()
-
+        
         # Start the timer for execution time
         self.update_execution_time()
 
