@@ -12,12 +12,12 @@ from gui_log_handler import GUIConsoleLogHandler
 from main import main as  main_run_script
 
 
-class ATMLogGrapperApp:
+class ATMLogCollectorApp:
     def __init__(self, root, width, height):
         self.root = root
         self.root.title("ATM LOG Collector")
         self.root.geometry(f"{width}x{height}")
-        self.root.iconbitmap('coop.ico')
+        self.root.iconbitmap('assets/coop.ico')
         self.root.resizable(False, False)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)  # Intercept the close button event
         self.main_frame = ttk.Frame(root)
@@ -71,7 +71,7 @@ class ATMLogGrapperApp:
     
     def create_gui_elements(self):
                 # Logo
-                self.logo_image = tk.PhotoImage(file="logo.png")
+                self.logo_image = tk.PhotoImage(file="assets/logo.png")
                 self.logo_label = ttk.Label(self.main_frame, image=self.logo_image)
                 self.logo_label.grid(row=0, column=0, columnspan=1, pady=20)
 
@@ -104,7 +104,7 @@ class ATMLogGrapperApp:
                 right_frame = ttk.Frame(self.main_frame)
                 right_frame.grid(row=1, column=1, padx=10, sticky=tk.W)
                 # Create the title label for the console log
-                self.title_label = ttk.Label(right_frame, text="Status Log", font=("Helvetica", 12, "bold"))
+                self.title_label = ttk.Label(right_frame, text="Status Logs")
                 self.title_label.grid(row=0, column=0, columnspan=2, pady=(10, 5))
                # Create the console log text widget with horizontal expansion and text wrapping
                 self.console_log_text = tk.Text(right_frame, height=15, width=70, wrap=tk.WORD)
@@ -126,7 +126,7 @@ class ATMLogGrapperApp:
                 self.start_time_label.grid(row=4, column=0, columnspan=2, pady=5)
                 
                 
-                footer_text = "Made With  ❤️ \n COOP Bank of Oromia \n Payment Switch Acquiring Team \n 2024"
+                footer_text = "Made With  ❤️ \n COOP Bank of Oromia \n Payment Switch Acquiring Team \n © 2024"
                 footer_label = ttk.Label(self.main_frame, text=footer_text, anchor="center", justify="center")
                 footer_label.grid(row=2, column=0, columnspan=2, pady=(10, 0), sticky="nsew")
 
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     custom_width = 1080
     custom_height = 640
     root = tk.Tk()
-    app = ATMLogGrapperApp(root, custom_width, custom_height)
+    app = ATMLogCollectorApp(root, custom_width, custom_height)
     
     root.mainloop()
     
