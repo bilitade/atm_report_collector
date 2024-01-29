@@ -3,6 +3,8 @@ import logging
 import time
 import queue 
 import sys
+import os
+import sys
 import tkinter as tk
 from tkinter import ttk
 from queue import Queue
@@ -10,14 +12,16 @@ from threading import Thread
 from tkinter import filedialog, messagebox
 from gui_log_handler import GUIConsoleLogHandler
 from main import main as  main_run_script
-
+base_path = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+logo_path = os.path.join(base_path, 'assets', 'logo.png')
+icon_path = os.path.join(base_path, 'assets', 'coop.ico')
 
 class ATMLogCollectorApp:
     def __init__(self, root, width, height):
         self.root = root
         self.root.title("ATM LOG Collector")
         self.root.geometry(f"{width}x{height}")
-        self.root.iconbitmap('assets/coop.ico')
+        self.root.iconbitmap(default=icon_path)
         self.root.resizable(False, False)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)  # Intercept the close button event
         self.main_frame = ttk.Frame(root)
@@ -71,7 +75,7 @@ class ATMLogCollectorApp:
     
     def create_gui_elements(self):
                 # Logo
-                self.logo_image = tk.PhotoImage(file="assets/logo.png")
+                self.logo_image = tk.PhotoImage(file=logo_path)
                 self.logo_label = ttk.Label(self.main_frame, image=self.logo_image)
                 self.logo_label.grid(row=0, column=0, columnspan=1, pady=20)
 
