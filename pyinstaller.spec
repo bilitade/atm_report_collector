@@ -23,8 +23,11 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='GUI',  # Update the name of your executable if needed
+          name='COOP ATM Log Collector',  # Update the name of your executable if needed
           debug=False,
+          bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True)
+          console=True,
+          icon='assets/coop.ico'
+          )

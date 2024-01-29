@@ -48,9 +48,12 @@ class ATMLogCollectorApp:
             if messagebox.askokcancel("Quit", "Do you want to quit?"):
          
                 sys.exit()
-   
+    def clear_status_log(self):
+        self.console_log_text.delete('1.0', tk.END)
     def run_script(self):
          # Reset the start time
+        # Clear the status log text box before running the script
+        self.clear_status_log()
         self.disable_buttons()
         self.start_time = time.time()
         self.progress_bar.start()
@@ -208,7 +211,7 @@ class ATMLogCollectorApp:
     def enable_main_exit_button(self):
         self.main_exit_button_enabled = True
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)  # Re-enable closing via the main exit button
-
+    
 
 if __name__ == "__main__":
     custom_width = 1080

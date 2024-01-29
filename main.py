@@ -11,12 +11,18 @@ from log_config import logger
 # Dictionary to store previous connections
 previous_connections = {}
 
+
+   
+ 
+
+
 def is_valid_ip(ip):
     try:
         socket.inet_aton(ip)
         return True
     except socket.error:
         return False
+
 
 def connect_to_atm(atm):
     try:
@@ -86,6 +92,7 @@ def copy_file_from_atm(atm, logs_folder, base_destination_folder):
 
 def main(atm_config_path, shared_folder_name, logs_path):
     configure_logging(logs_path)
+    global previous_connections;
 
     try:
         if not atm_config_path.endswith('.json'):
@@ -105,11 +112,12 @@ def main(atm_config_path, shared_folder_name, logs_path):
                 if not all(key in atm_info for key in required_keys):
                     logger.info("Please check the format of the selected JSON file. It isn't compatible with this program. Use the right JSON.")
                     return
-
+        
         if not atm_list:
             logger.info("Please provide a valid config.json file.")
             return
-
+        logger.info("<EXECUTION BEGIN>")
+        logger.info("=================")
         for atm_info in atm_list:
             connect_to_atm(atm_info)
             if "ATM_Terminal_Id" in atm_info and atm_info["ATM_Terminal_Id"] in previous_connections:
@@ -117,11 +125,15 @@ def main(atm_config_path, shared_folder_name, logs_path):
                 disconnect_from_atm(atm_info)  # Disconnect after copying file
             else:
                 disconnect_from_atm(atm_info)  # Disconnect if no copying is needed
-
+        logger.info("==================")
+        logger.info("EXECUTION COMPLETE ")
+        logger.info("Check Copied files and Status Log  in your directory: {}".format(logs_path))
+        previous_connections={}
+    
     except FileNotFoundError:
         logger.info("Please provide a config.json file.")
 
-
+    
 
 #the following main is if we want to run from CLI 
 
